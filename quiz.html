@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="te">
+<head>
+    <meta charset="UTF-8">
+    <title>బుద్ధుని బోధనలు - ఆన్‌లైన్ పరీక్ష</title>
+    <style>
+        body { font-family: 'Noto Sans Telugu', sans-serif; margin: 20px; background: #f9f9f9; }
+        .container { max-width: 700px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        h2 { text-align: center; }
+        .question { margin-bottom: 15px; }
+        .options label { display: block; margin-bottom: 5px; }
+        button { background: #4CAF50; color: white; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background: #45a049; }
+        .result { margin-top: 20px; padding: 10px; background: #e7f3fe; border-radius: 5px; }
+        .correct { color: green; }
+        .wrong { color: red; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>బుద్ధుని బోధనలు - ఆన్‌లైన్ పరీక్ష</h2>
+        <form id="quizForm">
+            <div id="quiz"></div>
+            <br>
+            <button type="button" onclick="submitQuiz()">పరీక్ష సమర్పించు</button>
+        </form>
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        const questions = [
+            { q: "బుద్ధుని బోధనలను ఏమంటారు?", options: ["ధర్మం","వేదాలు","ఆర్యసత్యాలు","ఉపనిషత్తులు"], answer: 0 },
+            { q: "బుద్ధుని అసలు పేరు ఏమిటి?", options: ["గౌతముడు","సిద్ధార్థుడు","ఆనందుడు","అశ్వఘోషుడు"], answer: 1 },
+            { q: "బుద్ధుడు ఏ నగరంలో మరణించాడు?", options: ["లుంబిని","కుశీనగర్","సారనాథ్","బోధ్ గయ"], answer: 1 },
+            { q: "బౌద్ధమత పవిత్ర గ్రంథాలను ఏం అంటారు?", options: ["వేదాలు","త్రిపిటకాలు","ఆరన్యకాలు","ఉపనిషత్తులు"], answer: 1 },
+            { q: "బౌద్ధ మతానికి సంబంధం లేనిది ఏమిటి?", options: ["యజ్ఞాలు","అహింస","కర్మ సిద్ధాంతం","అష్టాంగిక మార్గం"], answer: 0 },
+            { q: "బుద్ధుని పెంపుడు తల్లి పేరు ఏమిటి?", options: ["మహామాయా","మహాప్రజాపతి గౌతమీ","యశోదర","మాలవిక"], answer: 1 },
+            { q: "బుద్ధుడు ఎన్నో ఏట గృహాన్ని విడిచిపెట్టి వెళ్లాడు?", options: ["19 సంవత్సరాలు","25 సంవత్సరాలు","29 సంవత్సరాలు","35 సంవత్సరాలు"], answer: 2 },
+            { q: "బుద్ధుడు జ్ఞానోదయం పొందడాన్ని ఏమని పిలుస్తారు?", options: ["సంభోది","మోక్షం","సమాధి","కైవల్యం"], answer: 0 },
+            { q: "బౌద్ధ మతాన్ని స్వీకరించిన మొట్టమొదటి వ్యక్తి ఎవరు?", options: ["యశుడు","కశ్యపుడు","గౌతమీ ప్రజాపతి","ఉపాలి"], answer: 0 },
+            { q: "భారతదేశంలో అతి పెద్ద స్తూపం ఏది?", options: ["సాంచి స్తూపం","అమరావతి స్తూపం","నాగార్జునకొండ స్తూపం","గోల్గుంబజ్"], answer: 0 },
+            { q: "బుద్ధుడు గృహాన్ని విడిచిపెట్టి వెళ్లడాన్ని ఏ పేరుతో పిలుస్తారు?", options: ["జాతకము","మహాభినిష్క్రమణ","పరివ్రాజకత్వం","దిక్ష"], answer: 1 },
+            { q: "జైనమత పవిత్ర గ్రంథాలను ఏ పేరుతో పిలుస్తారు?", options: ["ఆగమాలు","ఉపనిషత్తులు","త్రిపిటకాలు","వేదాలు"], answer: 0 },
+            { q: "వర్ధమాన మహావీరుడు జన్మించిన ప్రదేశం ఏది?", options: ["పావాపురి","వేశాలి (కుందగ్రామం)","గిరివ్రజ","కాశీ"], answer: 1 },
+            { q: "బుద్ధుని భార్య పేరు ఏమిటి?", options: ["మహామాయ","యశోదర","గౌతమీ","మాలవిక"], answer: 1 },
+            { q: "బుద్ధుని రథసారథి పేరు ఏమిటి?", options: ["ఆనందుడు","చన్నుడు","ఉపాలి","కశ్యపుడు"], answer: 1 }
+        ];
+
+        const quizDiv = document.getElementById("quiz");
+        questions.forEach((q, i) => {
+            let qDiv = document.createElement("div");
+            qDiv.classList.add("question");
+            qDiv.innerHTML = `<strong>${i+1}) ${q.q}</strong>`;
+            let opts = document.createElement("div");
+            opts.classList.add("options");
+            q.options.forEach((opt, j) => {
+                opts.innerHTML += `<label><input type="radio" name="q${i}" value="${j}"> ${opt}</label>`;
+            });
+            qDiv.appendChild(opts);
+            quizDiv.appendChild(qDiv);
+        });
+
+        function submitQuiz() {
+            let score = 0;
+            let resultHTML = "<h3>ఫలితాలు:</h3>";
+            questions.forEach((q, i) => {
+                let selected = document.querySelector(`input[name="q${i}"]:checked`);
+                if(selected) {
+                    if(parseInt(selected.value) === q.answer) {
+                        score++;
+                        resultHTML += `<p class='correct'>${i+1}) ✅ సరైన సమాధానం: ${q.options[q.answer]}</p>`;
+                    } else {
+                        resultHTML += `<p class='wrong'>${i+1}) ❌ మీరు ఎంచుకున్నది: ${q.options[selected.value]} | సరైన సమాధానం: ${q.options[q.answer]}</p>`;
+                    }
+                } else {
+                    resultHTML += `<p class='wrong'>${i+1}) ❌ సమాధానం ఇవ్వలేదు | సరైన సమాధానం: ${q.options[q.answer]}</p>`;
+                }
+            });
+            resultHTML = `<h3>మీ మొత్తం స్కోరు: ${score} / ${questions.length}</h3>` + resultHTML;
+            document.getElementById("result").innerHTML = resultHTML;
+        }
+    </script>
+</body>
+</html>
